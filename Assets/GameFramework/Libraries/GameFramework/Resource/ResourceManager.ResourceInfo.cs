@@ -139,7 +139,7 @@ namespace GameFramework.Resource
                 get
                 {
                     return m_Ready;
-                }
+            }
             }
 
             /// <summary>

@@ -70,6 +70,8 @@ namespace GameFramework.Resource
                 try
                 {
                     memoryStream = new MemoryStream(bytes, false);
+
+                    // 反序列化包版本列表。获取Asset,Resource, FileSystem和ResourceGroup等相关信息。
                     PackageVersionList versionList = m_ResourceManager.m_PackageVersionListSerializer.Deserialize(memoryStream);
                     if (!versionList.IsValid)
                     {
@@ -84,8 +86,11 @@ namespace GameFramework.Resource
                     m_ResourceManager.m_InternalResourceVersion = versionList.InternalResourceVersion;
                     m_ResourceManager.m_AssetInfos = new Dictionary<string, AssetInfo>(assets.Length, StringComparer.Ordinal);
                     m_ResourceManager.m_ResourceInfos = new Dictionary<ResourceName, ResourceInfo>(resources.Length, new ResourceNameComparer());
+                    //在ResourceManager中创建一个默认资源组。后续所有Resource都会被添加到这个默认资源组中。
                     ResourceGroup defaultResourceGroup = m_ResourceManager.GetOrAddResourceGroup(string.Empty);
-
+                   
+                    //确定每个Resource所在的fileSystem，以字典形式存储，key为ResourceName，value为FileSystemName。
+                    //如果对应资源已存在变体，则跳过该资源。
                     foreach (PackageVersionList.FileSystem fileSystem in fileSystems)
                     {
                         int[] resourceIndexes = fileSystem.GetResourceIndexes();
@@ -101,6 +106,10 @@ namespace GameFramework.Resource
                         }
                     }
 
+                    //获取Resource中存储的Asset信息，最终以AssetInfo的形式存储在ResourceManager的字典中，key为AssetName，value为AssetInfo。
+                    //AssetInfo包含Asset名称，所属Resource名称，依赖的Asset名称列表等信息。
+                    //同时将Resource的信息以ResourceInfo的形式存储在ResourceManager的字典中，key为ResourceName，value为ResourceInfo。
+                    //ResourceInfo包含Resource名称，所属FileSystem名称，加载方式，资源大小，资源哈希值等信息。
                     foreach (PackageVersionList.Resource resource in resources)
                     {
                         if (resource.Variant != null && resource.Variant != m_CurrentVariant)
@@ -110,6 +119,9 @@ namespace GameFramework.Resource
 
                         ResourceName resourceName = new ResourceName(resource.Name, resource.Variant, resource.Extension);
                         int[] assetIndexes = resource.GetAssetIndexes();
+                        
+                        //这一段主要是为了获取当前Asset的依赖Assets，主要是获取这些依赖Assets的名称，以string的方式传递进AssetInfo中。
+                        //每个Asset在Resource中都有一个独一无二的索引。
                         foreach (int assetIndex in assetIndexes)
                         {
                             PackageVersionList.Asset asset = assets[assetIndex];
@@ -123,7 +135,8 @@ namespace GameFramework.Resource
 
                             m_ResourceManager.m_AssetInfos.Add(asset.Name, new AssetInfo(asset.Name, resourceName, dependencyAssetNames));
                         }
-
+                        
+                        //获取Resource所在的FileSystem名称，如果没有找到对应的FileSystem，则默认为null。
                         string fileSystemName = null;
                         if (!m_CachedFileSystemNames.TryGetValue(resourceName, out fileSystemName))
                         {
@@ -131,9 +144,15 @@ namespace GameFramework.Resource
                         }
 
                         m_ResourceManager.m_ResourceInfos.Add(resourceName, new ResourceInfo(resourceName, fileSystemName, (LoadType)resource.LoadType, resource.Length, resource.HashCode, true, true));
+                        //将所有Resource添加到默认资源组中。
                         defaultResourceGroup.AddResource(resourceName, resource.Length, resource.Length);
                     }
 
+                    // PackageVersionList中的ResourceGroup是结构体，仅作为反序列化的临时载体（immutable DTO），
+                    // 循环结束后即被丢弃。而ResourceManager内部的ResourceGroup是类实例（mutable），
+                    // 需要持久化存在于整个运行时，支持AddResource、追踪ReadyCount等状态变化。
+                    // 因此这里将每个结构体ResourceGroup的数据提取出来，转换为类实例并注册到ResourceManager中。
+                    // 每个ResourceGroup通过资源索引列表关联其包含的所有Resource。
                     foreach (PackageVersionList.ResourceGroup resourceGroup in resourceGroups)
                     {
                         ResourceGroup group = m_ResourceManager.GetOrAddResourceGroup(resourceGroup.Name);

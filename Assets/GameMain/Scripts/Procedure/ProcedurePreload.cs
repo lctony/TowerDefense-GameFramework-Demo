@@ -31,14 +31,13 @@ namespace Flower
         protected override void OnEnter(ProcedureOwner procedureOwner)
         {
             base.OnEnter(procedureOwner);
-
             GameEntry.Event.Subscribe(LoadConfigSuccessEventArgs.EventId, OnLoadConfigSuccess);
             GameEntry.Event.Subscribe(LoadConfigFailureEventArgs.EventId, OnLoadConfigFailure);
             GameEntry.Event.Subscribe(LoadDictionarySuccessEventArgs.EventId, OnLoadDictionarySuccess);
             GameEntry.Event.Subscribe(LoadDictionaryFailureEventArgs.EventId, OnLoadDictionaryFailure);
 
             GameFramework.Data.Data[] _datas = GameEntry.Data.GetAllData();
-
+             
             datas = new DataBase[_datas.Length];
             for (int i = 0; i < _datas.Length; i++)
             {
@@ -73,7 +72,7 @@ namespace Flower
                 if (!item.IsPreloadReady)
                     return;
             }
-
+            
             SetComponents();
             procedureOwner.SetData<VarInt32>(Constant.ProcedureData.NextSceneId, GameEntry.Config.GetInt("Scene.Menu"));
             ChangeState<ProcedureLoadingScene>(procedureOwner);

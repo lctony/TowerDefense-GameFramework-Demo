@@ -91,11 +91,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 count = xmlNodeList.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    if (OnLoadingResource != null)
-                    {
-                        OnLoadingResource(i, count);
-                    }
-
+                    OnLoadingResource?.Invoke(i, count);
                     xmlNode = xmlNodeList.Item(i);
                     if (xmlNode.Name != "Resource")
                     {
@@ -103,8 +99,8 @@ namespace UnityGameFramework.Editor.ResourceTools
                     }
 
                     string name = xmlNode.Attributes.GetNamedItem("Name").Value;
-                    string variant = xmlNode.Attributes.GetNamedItem("Variant") != null ? xmlNode.Attributes.GetNamedItem("Variant").Value : null;
-                    string fileSystem = xmlNode.Attributes.GetNamedItem("FileSystem") != null ? xmlNode.Attributes.GetNamedItem("FileSystem").Value : null;
+                    string variant = xmlNode.Attributes.GetNamedItem("Variant")?.Value;
+                    string fileSystem = xmlNode.Attributes.GetNamedItem("FileSystem")?.Value;
                     byte loadType = 0;
                     if (xmlNode.Attributes.GetNamedItem("LoadType") != null)
                     {
@@ -117,7 +113,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                         bool.TryParse(xmlNode.Attributes.GetNamedItem("Packed").Value, out packed);
                     }
 
-                    string[] resourceGroups = xmlNode.Attributes.GetNamedItem("ResourceGroups") != null ? xmlNode.Attributes.GetNamedItem("ResourceGroups").Value.Split(',') : null;
+                    string[] resourceGroups = xmlNode.Attributes.GetNamedItem("ResourceGroups")?.Value.Split(',');
                     if (!AddResource(name, variant, fileSystem, (LoadType)loadType, packed, resourceGroups))
                     {
                         Debug.LogWarning(Utility.Text.Format("Can not add resource '{0}'.", GetResourceFullName(name, variant)));
@@ -129,11 +125,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 count = xmlNodeList.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    if (OnLoadingAsset != null)
-                    {
-                        OnLoadingAsset(i, count);
-                    }
-
+                    OnLoadingAsset?.Invoke(i, count);
                     xmlNode = xmlNodeList.Item(i);
                     if (xmlNode.Name != "Asset")
                     {
@@ -142,7 +134,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
                     string guid = xmlNode.Attributes.GetNamedItem("Guid").Value;
                     string name = xmlNode.Attributes.GetNamedItem("ResourceName").Value;
-                    string variant = xmlNode.Attributes.GetNamedItem("ResourceVariant") != null ? xmlNode.Attributes.GetNamedItem("ResourceVariant").Value : null;
+                    string variant = xmlNode.Attributes.GetNamedItem("ResourceVariant")?.Value;
                     if (!AssignAsset(guid, name, variant))
                     {
                         Debug.LogWarning(Utility.Text.Format("Can not assign asset '{0}' to resource '{1}'.", guid, GetResourceFullName(name, variant)));

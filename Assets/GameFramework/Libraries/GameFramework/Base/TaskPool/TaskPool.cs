@@ -266,18 +266,19 @@ namespace GameFramework
                 T task = current.Value;
                 LinkedListNode<T> next = current.Next;
                 StartTaskStatus status = agent.Start(task);
+                //如果任务完成、需要等待或者发生未知错误，则重置任务代理并将其放回可用任务代理池中，同时从工作中任务代理链表中移除该任务代理。
                 if (status == StartTaskStatus.Done || status == StartTaskStatus.HasToWait || status == StartTaskStatus.UnknownError)
                 {
                     agent.Reset();
                     m_FreeAgents.Push(agent);
                     m_WorkingAgents.Remove(agentNode);
                 }
-
+                //如果任务完成、可以继续或者发生未知错误，则从等待任务链表中移除该任务。
                 if (status == StartTaskStatus.Done || status == StartTaskStatus.CanResume || status == StartTaskStatus.UnknownError)
                 {
                     m_WaitingTasks.Remove(current);
                 }
-
+                //如果任务完成或者发生未知错误，则释放该任务。
                 if (status == StartTaskStatus.Done || status == StartTaskStatus.UnknownError)
                 {
                     ReferencePool.Release(task);

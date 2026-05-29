@@ -14,17 +14,6 @@ namespace Flower
 
         [SerializeField]
         private Slider m_ProgressSlider = null;
-
-        private void Start()
-        {
-
-        }
-
-        private void Update()
-        {
-
-        }
-
         public void SetProgress(float progress, string description)
         {
             m_ProgressSlider.value = progress;

@@ -77,8 +77,10 @@ namespace GameFramework.Resource
                 {
                     throw new GameFrameworkException("Read-write path is invalid.");
                 }
-
+                //读写区：Application.persistentDataPath:C:/Users/<用户名>/AppData/LocalLow/<公司名>/<产品名>
+                //Application.CachePath:C:/Users/<用户名>/AppData/Local/Temp/<公司名>/<产品名>
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadWritePath, RemoteVersionListFileName)), new LoadBytesCallbacks(OnLoadUpdatableVersionListSuccess, OnLoadUpdatableVersionListFailure), null);
+                //只读区：Application.streamingAssetsPath:Assets/StreamingAssets
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadOnlyVersionListSuccess, OnLoadReadOnlyVersionListFailure), null);
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadWritePath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadWriteVersionListSuccess, OnLoadReadWriteVersionListFailure), null);
             }

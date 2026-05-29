@@ -61,3 +61,7 @@ crashlytics-build.properties
 UnityPackageManager/
 Assets/StreamingAssets/
 Assets/StreamingAssets.meta
+
+# Custom ignore rules
+OutputDirectory/
+GameFrameworkMindMapping/

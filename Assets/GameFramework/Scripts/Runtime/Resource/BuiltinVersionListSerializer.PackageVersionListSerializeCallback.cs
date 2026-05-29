@@ -33,7 +33,7 @@ namespace UnityGameFramework.Runtime
                 return false;
             }
 
-            Utility.Random.GetRandomBytes(s_CachedHashBytes);
+            Array.Clear(s_CachedHashBytes, 0, CachedHashBytesLength);
             using (BinaryWriter binaryWriter = new BinaryWriter(stream, Encoding.UTF8))
             {
                 binaryWriter.Write(s_CachedHashBytes);
@@ -98,7 +98,7 @@ namespace UnityGameFramework.Runtime
                 return false;
             }
 
-            Utility.Random.GetRandomBytes(s_CachedHashBytes);
+            Array.Clear(s_CachedHashBytes, 0, CachedHashBytesLength);
             using (BinaryWriter binaryWriter = new BinaryWriter(stream, Encoding.UTF8))
             {
                 binaryWriter.Write(s_CachedHashBytes);
@@ -166,7 +166,7 @@ namespace UnityGameFramework.Runtime
                 return false;
             }
 
-            Utility.Random.GetRandomBytes(s_CachedHashBytes);
+            Array.Clear(s_CachedHashBytes, 0, CachedHashBytesLength);
             using (BinaryWriter binaryWriter = new BinaryWriter(stream, Encoding.UTF8))
             {
                 binaryWriter.Write(s_CachedHashBytes);

@@ -171,8 +171,10 @@ namespace Flower
             }
 
             int index = 0;
+            //跳过配置编号前的通过制表符分割出来的空字符串
             index++;
             m_Id = int.Parse(columnStrings[index++]);
+            //跳过策划备注
             index++;
             NameId = columnStrings[index++];
             EntityId = int.Parse(columnStrings[index++]);

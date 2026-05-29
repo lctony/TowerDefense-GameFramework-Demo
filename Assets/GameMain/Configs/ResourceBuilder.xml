@@ -2,9 +2,9 @@
 <UnityGameFramework>
   <ResourceBuilder>
     <Settings>
-      <InternalResourceVersion>1</InternalResourceVersion>
+      <InternalResourceVersion>2</InternalResourceVersion>
       <Platforms>1</Platforms>
-      <ZipSelected>True</ZipSelected>
+      <ZipSelected>False</ZipSelected>
       <UncompressedAssetBundleSelected>False</UncompressedAssetBundleSelected>
       <DisableWriteTypeTreeSelected>False</DisableWriteTypeTreeSelected>
       <DeterministicAssetBundleSelected>True</DeterministicAssetBundleSelected>
@@ -17,7 +17,7 @@
       <OutputPackedSelected>True</OutputPackedSelected>
       <BuildEventHandlerTypeName>
       </BuildEventHandlerTypeName>
-      <OutputDirectory>C:/Users/未闻花名/Desktop/AB</OutputDirectory>
+      <OutputDirectory>D:/GitHubReponsitory/TowerDefense-GameFramework-Demo/OutputDirectory</OutputDirectory>
     </Settings>
   </ResourceBuilder>
 </UnityGameFramework>
